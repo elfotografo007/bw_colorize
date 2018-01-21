@@ -8,7 +8,7 @@
 	module load nVidia/cudnn-7.0
 	module load nVidia/nccl_v2
 	source ~/.bashrc
-	srun -p gpu_p100 --gres=gpu:2 --constraint="p100" -N 1 -n 1 python3 /home/s1821105/AML/train_gray_to_rgb.py
+	srun -p gpu_p100 --gres=gpu:2 --constraint="p100" -N 1-4 -n 1 -o /home/s1821105/AML/output.log python3 /home/s1821105/AML/train_gray_to_rgb.py &
 	
 	
 '''
@@ -32,6 +32,7 @@ inputs = Input(shape=(training_data.shape[1],training_data.shape[2],1))
 # Convolutional layers
 conv = Conv2D(30, (5, 5), strides=(1, 1) , padding='same', activation='relu')(inputs)
 conv = Conv2D(30, (4, 4), strides=(2, 2) , padding='valid', activation='relu')(conv)
+conv = Conv2D(50, (3, 3), strides=(2, 2) , padding='valid', activation='relu')(conv)
 
 # Fully connected layers
 x = Flatten()(conv)
@@ -46,4 +47,4 @@ model = Model(inputs=inputs, outputs=predictions)
 model.compile(optimizer='adam',
               loss='mean_squared_error',
                metrics=['accuracy'])
-model.fit(training_data, training_labels, epochs=10)  # starts training
+model.fit(training_data, training_labels, epochs=10, shuffle=True)  # starts training
