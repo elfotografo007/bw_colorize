@@ -36,8 +36,8 @@ conv = Conv2D(50, (3, 3), strides=(2, 2) , padding='valid', activation='relu')(c
 
 # Fully connected layers
 x = Flatten()(conv)
-x = Dense(7700, activation='relu')(x)
-x = Dense(1000, activation='relu')(x)
+x = Dense(14400, activation='relu')(x)
+x = Dense(9000, activation='relu')(x)
 predictions = Dense(27648, activation='relu')(x)
 predictions = Reshape((96,96,3))(predictions)
 
@@ -47,4 +47,4 @@ model = Model(inputs=inputs, outputs=predictions)
 model.compile(optimizer='adam',
               loss='mean_squared_error',
                metrics=['accuracy'])
-model.fit(training_data, training_labels, epochs=10, shuffle=True)  # starts training
+model.fit(training_data, training_labels, epochs=20, shuffle=True)  # starts training
