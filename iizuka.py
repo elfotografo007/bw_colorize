@@ -15,7 +15,7 @@
 '''
 
 import numpy as np
-from keras.layers import Input, Dense, Conv2D, Reshape, Flatten, UpSampling2D
+from keras.layers import Input, Dense, Conv2D, Reshape, Flatten, UpSampling2D, RepeatVector, concatenate
 from keras.models import Model
 from keras.callbacks import EarlyStopping
 from keras.optimizers import Adam
@@ -60,8 +60,11 @@ mid_1 = Conv2D(512, (3, 3), strides=(1, 1) , padding='same', activation='relu')(
 mid_2 = Conv2D(256, (3, 3), strides=(1, 1) , padding='same', activation='relu')(mid_1) #256*12x12
  
 # Colorization Network
-# TODO: Missing the fusion layer
-color_1 = Conv2D(128, (3, 3), strides=(1, 1) , padding='same', activation='relu')(mid_2)
+fusion_global = RepeatVector(12 * 12)(global_7)
+fusion_global = Reshape((12, 12, 256))(fusion_global)
+concatenate = concatenate([mid_2, fusion_global], axis=3)
+fusion = Dense(256,activation='relu')(concatenate)
+color_1 = Conv2D(128, (3, 3), strides=(1, 1) , padding='same', activation='relu')(fusion)
 color_up = UpSampling2D(size=(2, 2))(color_1)
 color_2 = Conv2D(64, (3, 3), strides=(1, 1) , padding='same', activation='relu')(color_up)
 color_3 = Conv2D(64, (3, 3), strides=(1, 1) , padding='same', activation='relu')(color_2)
@@ -78,10 +81,13 @@ print(model.summary())
 model.compile(optimizer='adadelta',
               loss='mean_squared_error',
                metrics=['accuracy'])
-early_stopping = EarlyStopping(monitor='val_loss', patience=3)
+early_stopping = EarlyStopping(monitor='val_acc', patience=4)
 model.fit(training_data, 
           training_labels, 
-          epochs=30, 
+          epochs=40, 
           shuffle=True, 
           validation_data=(validation_data, validation_labels),
           callbacks=[early_stopping])  # starts training
+
+#Save the model
+model.save('/home/s1821105/AML/full_model.h5')
