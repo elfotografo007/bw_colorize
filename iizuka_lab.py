@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 '''
-    Model training to color B&W photographies in RGB Space
+    Model training to color B&W photographies in Lab Space
     THEANO_FLAGS=device=cuda0
     To make it run in the slurm cluster:
         module load nVidia/cuda-8.0
         module load nVidia/cudnn-7.0
         module load nVidia/nccl_v2
         source ~/.bashrc
-	srun -p main --gres=gpu:1 --constraint="p100" -N 1-4 -n 1 -o /home/s1821105/AML/iizuka_output.log python3 /home/s1821105/AML/iizuka.py &
+	srun -p main --gres=gpu:1 --constraint="p100" -N 1-4 -n 1 -o /home/s1821105/AML/iizuka_lab.log python3 /home/s1821105/AML/iizuka_lab.py &
 
 
 '''
@@ -20,17 +20,12 @@ from keras.callbacks import EarlyStopping
 from keras.optimizers import Adam
 
 # Load the data
-training_data = np.load('/home/s1821105/AML/training_data.npy')
-training_labels = np.load('/home/s1821105/AML/training_labels.npy')
-validation_data = np.load('/home/s1821105/AML/validation_data.npy')
-validation_labels = np.load('/home/s1821105/AML/validation_labels.npy')
-# Reshaping because we only have one channel
-training_data = training_data.reshape(training_data.shape[0],training_data.shape[1],training_data.shape[2], 1)
-validation_data = validation_data.reshape(validation_data.shape[0],validation_data.shape[1],validation_data.shape[2], 1)
+training_data = np.load('/home/s1821105/AML/training_lab.npy')
+validation_data = np.load('/home/s1821105/AML/validation_lab.npy')
 
 # re-scale labels as we are using sigmoid
-training_labels = training_labels/256.0
-validation_labels = validation_labels/256.0
+training_data = training_data/256.0
+validation_data = validation_data/256.0
 
 # This returns a tensor
 inputs = Input(shape=(training_data.shape[1],training_data.shape[2],1))
@@ -69,7 +64,7 @@ color_2 = Conv2D(64, (3, 3), strides=(1, 1) , padding='same', activation='relu')
 color_3 = Conv2D(64, (3, 3), strides=(1, 1) , padding='same', activation='relu')(color_2)
 color_up = UpSampling2D(size=(2, 2))(color_3)
 color_4 = Conv2D(32, (3, 3), strides=(1, 1) , padding='same', activation='relu')(color_up)
-color_5 = Conv2D(3, (3, 3), strides=(1, 1) , padding='same', activation='sigmoid')(color_4)
+color_5 = Conv2D(2, (3, 3), strides=(1, 1) , padding='same', activation='sigmoid')(color_4)
 predictions = UpSampling2D(size=(2, 2))(color_5)
 #predictions = Reshape((96,96,3))(predictions)
 
@@ -81,12 +76,12 @@ model.compile(optimizer='adadelta',
               loss='mean_squared_error',
                metrics=['accuracy'])
 early_stopping = EarlyStopping(monitor='val_acc', patience=4)
-model.fit(training_data,
-          training_labels,
+model.fit(training_data[:,:,0],
+          training_data[:,:,1:],
           epochs=40,
           shuffle=True,
-          validation_data=(validation_data, validation_labels),
+          validation_data=(validation_data[:,:,0], validation_data[:,:,1:]),
           callbacks=[early_stopping])  # starts training
 
 #Save the model
-model.save('/home/s1821105/AML/full_model.h5')
+model.save('/home/s1821105/AML/full_model_lab.h5')
