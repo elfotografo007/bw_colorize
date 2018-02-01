@@ -24,9 +24,9 @@ test_data = test_data.reshape(test_data.shape[0],test_data.shape[1],test_data.sh
 test_labels = test_labels/256.0
 
 # Load the model
-model = model.load('/home/s1821105/AML/full_model_5531_val_acc.h5')
+model = load_model('/home/s1821105/AML/full_model_5531_val_acc.h5')
 metrics=model.evaluate(test_data, test_labels)
 
 print('Test data results: ')
 for i in range(len(model.metrics_names)):
-    print(str(model.metrics_names[i]) + ": " + metrics[i])
+    print(model.metrics_names[i] + ": " + str(metrics[i]))
