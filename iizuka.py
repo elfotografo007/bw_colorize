@@ -29,6 +29,8 @@ training_data = training_data.reshape(training_data.shape[0],training_data.shape
 validation_data = validation_data.reshape(validation_data.shape[0],validation_data.shape[1],validation_data.shape[2], 1)
 
 # re-scale labels as we are using sigmoid
+training_data = training_data/256.0
+validation_data = validation_data/256.0
 training_labels = training_labels/256.0
 validation_labels = validation_labels/256.0
 
