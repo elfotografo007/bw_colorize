@@ -24,8 +24,8 @@ training_data = np.load('/home/s1821105/AML/training_lab.npy')
 validation_data = np.load('/home/s1821105/AML/validation_lab.npy')
 
 # re-scale labels as we are using sigmoid
-training_data = training_data/256.0
-validation_data = validation_data/256.0
+training_data = training_data
+validation_data = validation_data
 
 # This returns a tensor
 inputs = Input(shape=(training_data.shape[1],training_data.shape[2],1))
@@ -66,7 +66,6 @@ color_up = UpSampling2D(size=(2, 2))(color_3)
 color_4 = Conv2D(32, (3, 3), strides=(1, 1) , padding='same', activation='relu')(color_up)
 color_5 = Conv2D(2, (3, 3), strides=(1, 1) , padding='same', activation='sigmoid')(color_4)
 predictions = UpSampling2D(size=(2, 2))(color_5)
-#predictions = Reshape((96,96,3))(predictions)
 
 # This creates a model that includes
 # the Input layer and three Dense layers
@@ -76,11 +75,12 @@ model.compile(optimizer='adadelta',
               loss='mean_squared_error',
                metrics=['accuracy'])
 early_stopping = EarlyStopping(monitor='val_acc', patience=4)
-model.fit(training_data[:,:,0],
-          training_data[:,:,1:],
+model.fit(training_data[:,:,:,0].reshape(training_data.shape[0],training_data.shape[1],training_data.shape[2], 1),
+          training_data[:,:,:,1:],
           epochs=40,
           shuffle=True,
-          validation_data=(validation_data[:,:,0], validation_data[:,:,1:]),
+          validation_data=(validation_data[:,:,:,0].reshape(validation_data.shape[0],validation_data.shape[1],validation_data.shape[2], 1), 
+	  validation_data[:,:,:,1:]),
           callbacks=[early_stopping])  # starts training
 
 #Save the model
