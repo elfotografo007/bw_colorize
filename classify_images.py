@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 
+'''
+    Pre-classify all the images to speed up things
+    THEANO_FLAGS=device=cuda0
+    To make it run in the slurm cluster:
+        module load nVidia/cuda-8.0
+        module load nVidia/cudnn-7.0
+        module load nVidia/nccl_v2
+        source ~/.bashrc
+	srun -p main --gres=gpu:1 -N 1-4 -n 1 -o /home/s1821105/AML/classify.log python3 /home/s1821105/AML/classify_images.py &
+
+
+'''
+
 import numpy as np
 from keras.applications.inception_resnet_v2 import preprocess_input, InceptionResNetV2
 from skimage.transform import resize
