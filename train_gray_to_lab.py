@@ -34,8 +34,8 @@ conv = Conv2D(50, (3, 3), strides=(2, 2) , padding='valid', activation='relu')(c
 x = Flatten()(conv)
 x = Dense(14400, activation='relu')(x)
 x = Dense(9000, activation='relu')(x)
-predictions = Dense(27648, activation='relu')(x)
-predictions = Reshape((96,96,3))(predictions)
+predictions = Dense(18432, activation='relu')(x)
+predictions = Reshape((96,96,2))(predictions)
 
 # This creates a model that includes
 # the Input layer and three Dense layers

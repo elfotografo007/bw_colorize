@@ -8,7 +8,7 @@
         module load nVidia/cudnn-7.0
         module load nVidia/nccl_v2
         source ~/.bashrc
-	srun -p main --gres=gpu:1 -N 1-4 -n 1 -o /home/s1821105/AML/iizuka_test.log python3 /home/s1821105/AML/iizuka_test.py &
+	srun -p main --gres=gpu:1 -N 1-4 -n 1 -o /home/s1821105/AML/our_model_rgb_test.log python3 /home/s1821105/AML/our_model_rgb_test.py &
 
 '''
 
@@ -24,7 +24,7 @@ test_data = test_data.reshape(test_data.shape[0],test_data.shape[1],test_data.sh
 test_labels = test_labels/256.0
 
 # Load the model
-model = load_model('/home/s1821105/AML/full_model_5531_val_acc.h5')
+model = load_model('/home/s1821105/AML/our_model_rgb_9000_5243.h5')
 print(model.summary())
 metrics=model.evaluate(test_data, test_labels)
 
