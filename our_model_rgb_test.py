@@ -21,6 +21,7 @@ test_labels = np.load('/home/s1821105/AML/test_labels.npy')
 # Reshaping because we only have one channel
 test_data = test_data.reshape(test_data.shape[0],test_data.shape[1],test_data.shape[2], 1)
 # re-scale labels as we are using sigmoid
+test_data = test_data/256.0
 test_labels = test_labels/256.0
 
 # Load the model
