@@ -24,7 +24,7 @@ model = load_model('/home/s1821105/AML/our_model_lab.h5')
 results=model.predict(test_data[:,:,:,0].reshape(test_data.shape[0],test_data.shape[1],test_data.shape[2], 1))
 
 N_IMAGES = 10
-final = np.zeros(N_IMAGES, test_data.shape[1],test_data.shape[2], 3)
+final = np.zeros((N_IMAGES, test_data.shape[1],test_data.shape[2], 3))
 final[:,:,:,0] = test_data[:N_IMAGES,:,:,0]
 final[:,:,:,1:] = results[:N_IMAGES,:,:,1:]
 np.save('test_results', final)
