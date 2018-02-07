@@ -8,7 +8,7 @@
         module load nVidia/cudnn-7.0
         module load nVidia/nccl_v2
         source ~/.bashrc
-	srun -p main --gres=gpu:1 -N 1-4 -n 1 -o /home/s1821105/AML/our_model_lab_test.log python3 /home/s1821105/AML/our_model_lab_test.py &
+	srun -p main --gres=gpu:1 -N 1-4 -n 1 -o /home/s1821105/AML/generate_test_images.log python3 /home/s1821105/AML/generate_test_images.py &
 
 '''
 
