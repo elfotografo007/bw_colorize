@@ -29,9 +29,9 @@ for i in range(test_data.shape[0]):
                        test_data[i,:,:,1:].reshape(1,test_data.shape[1],test_data.shape[2], 2))
     if metrics[1] > 0.95:
         p = model.predict(test_data[i,:,:,0].reshape(1,test_data.shape[1],test_data.shape[2], 1))
-        final = np.zeros((1, test_data.shape[1],test_data.shape[2], 3))
-        final[0,:,:,0] = test_data[i,:,:,0]
-        final[0,:,:,1:] = p
+        final = np.zeros((test_data.shape[1],test_data.shape[2], 3))
+        final[:,:,0] = test_data[i,:,:,0]
+        final[:,:,1:] = p
         predicted_results.append(final)
         test_real.append(test_data[i])
 
