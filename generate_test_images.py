@@ -22,7 +22,7 @@ test_data = np.load('/home/s1821105/AML/test_lab.npy')
 model = load_model('/home/s1821105/AML/our_model_lab.h5')
 
 metrics=model.evaluate(test_data[0,:,:,0].reshape(1,test_data.shape[1],test_data.shape[2], 1),
-                       test_data[0,:,:,1:])
+                       test_data[0,:,:,1:].reshape(1,test_data.shape[1],test_data.shape[2], 2))
 
 print('Test data results: ')
 for i in range(len(model.metrics_names)):
