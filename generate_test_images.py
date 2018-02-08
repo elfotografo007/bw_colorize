@@ -27,7 +27,7 @@ test_real = []
 for i in range(test_data.shape[0]):
     metrics=model.evaluate(test_data[i,:,:,0].reshape(1,test_data.shape[1],test_data.shape[2], 1),
                        test_data[i,:,:,1:].reshape(1,test_data.shape[1],test_data.shape[2], 2))
-    if metrics[1] > 0.6:
+    if metrics[1] > 0.7:
         p = model.predict(test_data[i,:,:,0].reshape(1,test_data.shape[1],test_data.shape[2], 1))
         final = np.zeros((1, test_data.shape[1],test_data.shape[2], 3))
         final[0,:,:,0] = test_data[i,:,:,0]
