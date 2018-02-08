@@ -21,17 +21,19 @@ test_data = np.load('/home/s1821105/AML/test_lab.npy')
 # Load the model
 model = load_model('/home/s1821105/AML/our_model_lab.h5')
 
-metrics=model.evaluate(test_data[0,:,:,0].reshape(1,test_data.shape[1],test_data.shape[2], 1),
-                       test_data[0,:,:,1:].reshape(1,test_data.shape[1],test_data.shape[2], 2))
 
-print('Test data results: ')
-for i in range(len(model.metrics_names)):
-    print(model.metrics_names[i] + ": " + str(metrics[i]))
+predicted_results = []
+test_real = []
+for i in range(test_data.shape[0]):
+    metrics=model.evaluate(test_data[i,:,:,0].reshape(1,test_data.shape[1],test_data.shape[2], 1),
+                       test_data[i,:,:,1:].reshape(1,test_data.shape[1],test_data.shape[2], 2))
+    if metrics[1] > 0.6:
+        p = model.predict(test_data[i,:,:,0].reshape(1,test_data.shape[1],test_data.shape[2], 1))
+        final = np.zeros((1, test_data.shape[1],test_data.shape[2], 3))
+        final[0,:,:,0] = test_data[i,:,:,0]
+        final[0,:,:,1:] = p
+        predicted_results.append(final)
+        test_real.append(test_data[i])
 
-#results=model.predict(test_data[:,:,:,0].reshape(test_data.shape[0],test_data.shape[1],test_data.shape[2], 1))
-
-#N_IMAGES = 10
-#final = np.zeros((N_IMAGES, test_data.shape[1],test_data.shape[2], 3))
-#final[:,:,:,0] = test_data[:N_IMAGES,:,:,0]
-#final[:,:,:,1:] = results[:N_IMAGES,:,:,1:]
-#np.save('test_results', final)
+np.save('test_results', np.array(predicted_results))
+np.save('test_ground_truth', np.array(test_real))
