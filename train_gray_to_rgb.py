@@ -10,8 +10,8 @@
 	source ~/.bashrc
 	srun -p main --gres=gpu:1 -N 1-4 -n 1 -o /home/s1821105/AML/output.log python3 /home/s1821105/AML/train_gray_to_rgb.py &
 	srun -p gpu_p100 --gres=gpu:2 --constraint="p100" -N 1-4 -n 1 -o /home/s1821105/AML/output.log python3 /home/s1821105/AML/train_gray_to_rgb.py &
-	
-	
+
+
 '''
 
 import numpy as np
@@ -56,11 +56,11 @@ model = Model(inputs=inputs, outputs=predictions)
 model.compile(optimizer='adam',
               loss='mean_squared_error',
                metrics=['accuracy'])
-early_stopping = EarlyStopping(monitor='val_loss', patience=2)
-model.fit(training_data, 
-	  training_labels, 
-	  epochs=100, 
-	  shuffle=True, 
+early_stopping = EarlyStopping(monitor='val_loss', patience=3)
+model.fit(training_data,
+	  training_labels,
+	  epochs=100,
+	  shuffle=True,
           validation_data=(validation_data, validation_labels),
 	  callbacks=[early_stopping])  # starts training
 #Save the model

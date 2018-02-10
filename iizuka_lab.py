@@ -74,12 +74,12 @@ print(model.summary())
 model.compile(optimizer='adadelta',
               loss='mean_squared_error',
                metrics=['accuracy'])
-early_stopping = EarlyStopping(monitor='val_acc', patience=4)
+early_stopping = EarlyStopping(monitor='val_loss', patience=4)
 model.fit(training_data[:,:,:,0].reshape(training_data.shape[0],training_data.shape[1],training_data.shape[2], 1),
           training_data[:,:,:,1:],
           epochs=40,
           shuffle=True,
-          validation_data=(validation_data[:,:,:,0].reshape(validation_data.shape[0],validation_data.shape[1],validation_data.shape[2], 1), 
+          validation_data=(validation_data[:,:,:,0].reshape(validation_data.shape[0],validation_data.shape[1],validation_data.shape[2], 1),
 	  validation_data[:,:,:,1:]),
           callbacks=[early_stopping])  # starts training
 

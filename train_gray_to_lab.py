@@ -43,7 +43,7 @@ model = Model(inputs=inputs, outputs=predictions)
 model.compile(optimizer='adam',
               loss='mean_squared_error',
                metrics=['accuracy'])
-early_stopping = EarlyStopping(monitor='val_loss', patience=2)
+early_stopping = EarlyStopping(monitor='val_loss', patience=3)
 model.fit(training_data[:,:,:,0].reshape(training_data.shape[0],training_data.shape[1],training_data.shape[2], 1),
           training_data[:,:,:,1:],
 	  epochs=100,
