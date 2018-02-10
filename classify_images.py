@@ -27,19 +27,27 @@ def classification_model(grayscaled_rgb):
         g = resize(grayscaled_rgb[i], (299, 299, 3), mode='constant')
         grayscaled_rgb_resized[i] = g
     grayscaled_rgb_resized = preprocess_input(grayscaled_rgb_resized)
-    classification_result = inception.predict(grayscaled_rgb_resized)
+    classification_result = inception.predict(grayscaled_rgb_resized, batch_size=1)
     return classification_result
-
+print('Loading Training Dataset')
 training_rgb = np.load('/home/s1821105/AML/training_labels.npy')
+print('Classifying training')
 training_classification = classification_model(training_rgb)
+print('Saving training classification')
 np.save('/home/s1821105/AML/training_classification', training_classification)
 del training_classification, training_rgb
 
+print('Loading Validation Dataset')
 validation_rgb = np.load('/home/s1821105/AML/validation_labels.npy')
+print('Classifying validation')
 validation_classification = classification_model(validation_rgb)
+print('Saving training classification')
 np.save('/home/s1821105/AML/validation_classification', validation_classification)
 del validation_rgb, validation_classification
 
+print('Loading Test Dataset')
 test_rgb = np.load('/home/s1821105/AML/test_labels.npy')
+print('Classifying test')
 test_classification = classification_model(test_rgb)
+print('Saving test classification')
 np.save('/home/s1821105/AML/test_classification', test_classification)
